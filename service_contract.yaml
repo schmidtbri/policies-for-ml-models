@@ -1,0 +1,240 @@
+components:
+  schemas:
+    Error:
+      description: Error.
+      properties:
+        messages:
+          description: List of error messages.
+          items:
+            type: string
+          title: Messages
+          type: array
+        type:
+          description: The type of error.
+          title: Type
+          type: string
+      required:
+      - type
+      - messages
+      title: Error
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    InsuranceChargesModelInput:
+      description: Schema for input of the model's predict method.
+      properties:
+        age:
+          description: Age of primary beneficiary in years.
+          maximum: 65.0
+          minimum: 18.0
+          title: Age
+          type: integer
+        bmi:
+          description: Body mass index of beneficiary.
+          maximum: 50.0
+          minimum: 15.0
+          title: Body Mass Index
+          type: number
+        children:
+          description: Number of children covered by health insurance.
+          maximum: 5.0
+          minimum: 0.0
+          title: Children
+          type: integer
+        region:
+          allOf:
+          - $ref: '#/components/schemas/RegionEnum'
+          description: Region where beneficiary lives.
+          title: Region
+        sex:
+          allOf:
+          - $ref: '#/components/schemas/SexEnum'
+          description: Gender of beneficiary.
+          title: Sex
+        smoker:
+          description: Whether beneficiary is a smoker.
+          title: Smoker
+          type: boolean
+      title: InsuranceChargesModelInput
+      type: object
+    ModelMetadata:
+      description: Metadata of a model.
+      properties:
+        description:
+          description: The description of the model.
+          title: Description
+          type: string
+        display_name:
+          description: The display name of the model.
+          title: Display Name
+          type: string
+        qualified_name:
+          description: The qualified name of the model.
+          title: Qualified Name
+          type: string
+        version:
+          description: The version of the model.
+          title: Version
+          type: string
+      required:
+      - display_name
+      - qualified_name
+      - description
+      - version
+      title: ModelMetadata
+      type: object
+    ModelMetadataCollection:
+      description: Collection of model metadata.
+      properties:
+        models:
+          description: A collection of model description.
+          items:
+            $ref: '#/components/schemas/ModelMetadata'
+          title: Models
+          type: array
+      required:
+      - models
+      title: ModelMetadataCollection
+      type: object
+    PredictionNotAvailable:
+      description: Schema returned when a prediction is not available because of a
+        policy decision.
+      properties:
+        messages:
+          items:
+            type: string
+          title: Messages
+          type: array
+      required:
+      - messages
+      title: PredictionNotAvailable
+      type: object
+    RegionEnum:
+      description: Enumeration for the value of the 'region' input of the model.
+      enum:
+      - southwest
+      - southeast
+      - northwest
+      - northeast
+      title: RegionEnum
+      type: string
+    SexEnum:
+      description: Enumeration for the value of the 'sex' input of the model.
+      enum:
+      - male
+      - female
+      title: SexEnum
+      type: string
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+    insurance_charges_model__prediction__schemas__InsuranceChargesModelOutput:
+      description: Schema for output of the model's predict method.
+      properties:
+        charges:
+          description: Individual medical costs billed by health insurance to customer
+            in US dollars.
+          title: Charges
+          type: number
+      title: InsuranceChargesModelOutput
+      type: object
+    policy_decorator__policy_decorator__OPAPolicyDecorator__output_schema__<locals>__NewUnion:
+      anyOf:
+      - $ref: '#/components/schemas/insurance_charges_model__prediction__schemas__InsuranceChargesModelOutput'
+      - $ref: '#/components/schemas/PredictionNotAvailable'
+      title: InsuranceChargesModelOutput
+info:
+  title: Insurance Charges Model Service
+  version: 0.3.1
+openapi: 3.0.2
+paths:
+  /:
+    get:
+      description: Root of API.
+      operationId: get_root__get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Root
+  /api/models:
+    get:
+      description: List of models available.
+      operationId: get_models_api_models_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelMetadataCollection'
+          description: Successful Response
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: Get Models
+  /api/models/insurance_charges_model/prediction:
+    post:
+      description: Model to predict the insurance charges of a customer.
+      operationId: PredictionController_api_models_insurance_charges_model_prediction_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsuranceChargesModelInput'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/policy_decorator__policy_decorator__OPAPolicyDecorator__output_schema__<locals>__NewUnion'
+          description: Successful Response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: Predictioncontroller
