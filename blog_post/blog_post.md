@@ -24,7 +24,8 @@ In this blog post we’ll also build a decorator that applies policies to the in
 
 The system we'll build will ultimately look like this:
 
-![Software Architecture](software_architecture_pfmlm.png)
+![Software Architecture]({attach}software_architecture_pfmlm.png){ width=100% }
+
 
 ## Installing a Model
 
@@ -681,7 +682,7 @@ uvicorn rest_model_service.main:app --reload
 
 The service process starts up and can be accessed in a web browser at http://127.0.0.1:8000. The service renders the OpenAPI specification as a webpage that looks like this:
 
-![Service Documentation](service_documentation_pfmlm.png)
+![Service Documentation]({attach}service_documentation_pfmlm.png){ width=100% }
 
 By using the MLModel base class provided by the ml_base package and the REST service framework provided by the rest_model_service package we're able to quickly stand up a service to host the model. The decorator that we want to deploy can also be added to the model through configuration, including all of their parameters.
 
@@ -987,7 +988,7 @@ The model service is deployed by using Kubernetes resources. These are:
 
 The software architecture will look like this when it is running in the Kubernetes cluster:
 
-![Software Architecture](better_software_architecture_pfmlm.png)
+![Software Architecture]({attach}better_software_architecture_pfmlm.png){ width=100% }
 
 This way of deploying the OPA service is called the "sidecar" pattern because the service Pods will contain the main model service and the OPA service running right beside it in the same cluster node.
 
