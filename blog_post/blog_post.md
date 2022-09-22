@@ -1,5 +1,5 @@
-Title: Load Tests for ML Models
-Date: 2022-09-01 07:00
+Title: Policies for ML Models
+Date: 2022-09-21 22:00
 Category: Blog\n",
 Slug: policies-for-ml-models
 Authors: Brian Schmidt
@@ -16,7 +16,7 @@ Machine learning models are being used to make ever more important decisions in 
 
 A policy is a system of guidelines that are used to make decisions. A software-defined policy is simply a policy that is written as code and can be executed. Most of the time, the policies followed by a software system are hard-coded into the system using whichever programming language the system is written in. This is often good enough for, but sometimes the policies are complex enough or change often enough to warrant writing them in a specialized language that is specifically designed for policies. By writing policies separately from the system that they will work in, we can decouple them from the system and make the system simpler to work in. Policies can also be written by domain experts and more easily integrated into the software system in this way.
  
-In this blog post we'll write policies for a deployed machine learning model, and we'll use the [Rego policy language](https://www.openpolicyagent.org/docs/latest/policy-language/). Policy decisions are made by querying policies written in Rego that are executed by the [Open Policy Agent](https://www.openpolicyagent.org/) which is a service that be integrated into software systems. Other services can offload policy management and execution to the OPA service, accessing it through an RESTful API. The OPA service is specifically built for low-latency evaluations of policies. Rego and OPA are already used to review [Kubernetes manifests](https://www.openpolicyagent.org/docs/latest/kubernetes-introduction/) for best practices, to review infrastructure deployments by [checking Terraform plans](https://www.openpolicyagent.org/docs/latest/terraform/), and to check for authorization within the [Envoy service mesh](https://www.openpolicyagent.org/docs/latest/envoy-introduction/). 
+In this blog post we'll write policies for a deployed machine learning model, and we'll use the [Rego policy language](https://www.openpolicyagent.org/docs/latest/policy-language/). Policy decisions are made by querying policies written in Rego that are executed by the [Open Policy Agent](https://www.openpolicyagent.org/) which is a service that can be integrated into software systems. Other services can offload policy management and execution to the OPA service, accessing it through an RESTful API. The OPA service is specifically built for low-latency evaluations of policies. Rego and OPA are already used to review [Kubernetes manifests](https://www.openpolicyagent.org/docs/latest/kubernetes-introduction/) for best practices, to review infrastructure deployments by [checking Terraform plans](https://www.openpolicyagent.org/docs/latest/terraform/), and to check for authorization within the [Envoy service mesh](https://www.openpolicyagent.org/docs/latest/envoy-introduction/). 
 
 In this blog post we’ll also build a decorator that applies policies to the input and output of a model by using the OPA service. By using the decorator pattern that we’ve shown in previous blog posts, we’ll be able to show how to integrate policies separately from the model itself. We'll show how to deploy the ML model inside of a RESTful service along with the decorator, all by modifying a simple configuration file.
 
@@ -24,7 +24,7 @@ In this blog post we’ll also build a decorator that applies policies to the in
 
 The system we'll build will ultimately look like this:
 
-[Software Architecture]({attach}software_architecture_pfmlm.png){ width=100% }
+![Software Architecture](software_architecture_pfmlm.png)
 
 ## Installing a Model
 
@@ -681,8 +681,7 @@ uvicorn rest_model_service.main:app --reload
 
 The service process starts up and can be accessed in a web browser at http://127.0.0.1:8000. The service renders the OpenAPI specification as a webpage that looks like this:
 
-
-[Service Documentation]({attach}service_documentation_pfmlm.png){ width=100% }
+![Service Documentation](service_documentation_pfmlm.png)
 
 By using the MLModel base class provided by the ml_base package and the REST service framework provided by the rest_model_service package we're able to quickly stand up a service to host the model. The decorator that we want to deploy can also be added to the model through configuration, including all of their parameters.
 
@@ -988,7 +987,7 @@ The model service is deployed by using Kubernetes resources. These are:
 
 The software architecture will look like this when it is running in the Kubernetes cluster:
 
-[Software Architecture]({attach}better_software_architecture_pfmlm.png){ width=100% }
+![Software Architecture](better_software_architecture_pfmlm.png)
 
 This way of deploying the OPA service is called the "sidecar" pattern because the service Pods will contain the main model service and the OPA service running right beside it in the same cluster node.
 
