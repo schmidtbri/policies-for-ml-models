@@ -36,8 +36,23 @@ clean-test:	## Remove test artifacts
 	rm -rf reports
 	rm -rf .pytype
 
+check-codestyle:  ## checks the style of the code against PEP8
+	pycodestyle policy_decorator --max-line-length=120
+
+check-docstyle:  ## checks the style of the docstrings against PEP257
+	pydocstyle policy_decorator
+
+check-security:  ## checks for common security vulnerabilities
+	bandit -r policy_decorator
+
 check-dependencies:  ## checks for security vulnerabilities in dependencies
 	safety check -r requirements.txt
+
+check-codemetrics:  ## calculate code metrics of the package
+	radon cc policy_decorator
+
+check-pytype:  ## perform static code analysis
+	pytype policy_decorator
 
 convert-post:  ## Convert the notebook into Markdown file
 	jupyter nbconvert --to markdown blog_post/blog_post.ipynb --output-dir='./blog_post' --TagRemovePreprocessor.remove_input_tags='{"hide_code"}'

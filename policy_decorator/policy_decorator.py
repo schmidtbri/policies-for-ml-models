@@ -1,3 +1,4 @@
+"""Policy decorator for MLModel instances."""
 from typing import List, Union
 from pydantic import BaseModel
 from ml_base.decorator import MLModelDecorator
@@ -7,6 +8,7 @@ from opa_client.opa import OpaClient
 
 class PredictionNotAvailable(BaseModel):
     """Schema returned when a prediction is not available because of a policy decision."""
+
     messages: List[str]
 
 
@@ -21,6 +23,7 @@ class OPAPolicyDecorator(MLModelDecorator):
     """
 
     def __init__(self, host: str, port: int, policy_package: str) -> None:
+        """Initialize instance of OPAPolicyDecorator."""
         super().__init__(host=host, port=port, policy_package=policy_package)
         self.__dict__["_client"] = OpaClient(host=host,
                                              port=port,
@@ -28,7 +31,7 @@ class OPAPolicyDecorator(MLModelDecorator):
 
     @property
     def output_schema(self) -> BaseModel:
-        """Decorator method that modifies the model's output schema to accomodate the policy decision.
+        """Decorate output_schema property to modify the model's output schema to accommodate the policy decision.
 
         Note:
             This method will create a Union of the model's output schema and the PredictionNotAvailable
@@ -39,12 +42,12 @@ class OPAPolicyDecorator(MLModelDecorator):
         class NewUnion(BaseModel):
             __root__: Union[self._model.output_schema, PredictionNotAvailable]
 
-        NewUnion.__name__ = self._model.output_schema.__class__.__name__
+        NewUnion.__name__ = self._model.output_schema.__name__
 
         return NewUnion
 
     def predict(self, data):
-        """Decorate the model's predict() method, calling the OPA service with the model's input and output.
+        """Decorate the model's predict method, calling the OPA service with the model's input and output.
 
         Note:
             If a prediction is allowed the OPAPolicyDecorator predict() method will return an
@@ -75,6 +78,7 @@ class OPAPolicyDecorator(MLModelDecorator):
             return PredictionNotAvailable(messages=response["result"]["messages"])
 
     def __del__(self):
+        """Delete instance of OPAPolicyDecorator."""
         try:
             if self.__dict__["_client"] is not None:
                 del self.__dict__["_client"]
