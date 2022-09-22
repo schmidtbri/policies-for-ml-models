@@ -1,8 +1,8 @@
-# Guardrails For ML Models
+# Policies For ML Models
 
-Guardrails for machine learning model deployments.
+Policies for machine learning model deployments.
 
-This code is used in this [blog post](https://www.tekhnoal.com/guardrails-for-ml-models.html).
+This code is used in this [blog post](https://www.tekhnoal.com/policies-for-ml-models.html).
 
 ## Requirements
 
@@ -15,14 +15,14 @@ The Makefile included with this project contains targets that help to automate s
 To download the source code execute this command:
 
 ```bash
-git clone https://github.com/schmidtbri/guardrails-for-ml-models
+git clone https://github.com/schmidtbri/policies-for-ml-models
 ```
 
 Then create a virtual environment and activate it:
 
 ```bash
 # go into the project directory
-cd guardrails-for-ml-models
+cd policies-for-ml-models
 
 make venv
 
