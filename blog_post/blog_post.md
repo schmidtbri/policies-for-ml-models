@@ -1,6 +1,6 @@
 Title: Policies for ML Models
 Date: 2022-09-21 22:00
-Category: Blog\n",
+Category: Blog
 Slug: policies-for-ml-models
 Authors: Brian Schmidt
 Summary: Machine learning models are being used to make ever more important decisions in the modern world. Because of the power of data modeling, ML models are able to learn the nuances of a domain and make accurate predictions even in situations where a human expert would not be able to. However, ML models are not omniscient and they should not run without oversight from their operators. To handle situations in which we don't want to have an ML model make predictions, we can create a policy that steps in before the prediction is returned to the user. A policy that is applied to an ML model is simply a rule that ensures that the model will never make predictions that are unsafe to use. For example, we can create a policy that make sure that a machine learning model that makes predictions about optimal airline ticket prices never makes predictions that cost the airline money. A good policy for an ML model is one that allows the model some leeway while also ensuring that the model’s predictions are safe to use. In this blog post, we'll write policies for ML models and deploy the policies alongside the model using the decorator pattern.
